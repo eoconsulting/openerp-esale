@@ -61,7 +61,8 @@ class product_category(osv.osv):
     def onchange_name(self, cr, uid, ids, name, slug):
         value = {}
         if not slug:
-            slug = slugify(unicode(name,'UTF-8'))
+            if name:
+                slug = slugify(unicode(name,'UTF-8'))
             value = {'slug': slug}
         return {'value':value}
 
@@ -340,7 +341,8 @@ class product_product(osv.osv):
     def onchange_name(self, cr, uid, ids, name, slug):
         value = {}
         if not slug:
-            slug = slugify(unicode(name,'UTF-8'))
+            if name:
+                slug = slugify(unicode(name,'UTF-8'))
             value = {'slug': slug}
         return {'value':value}
 
