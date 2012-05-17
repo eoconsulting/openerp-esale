@@ -1,0 +1,7 @@
+*.pyc
+*.pyo
+
+.settings
+.project
+.pydevproject
+.directory
