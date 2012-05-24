@@ -97,21 +97,19 @@ class product_category(osv.osv):
             ids = [ids]
 
         reads = self.read(cr, uid, ids, ['slug','parent_id'], context=context)
-        result = []
         parent_slug = ''
-        name = ''
+        name =[]
 
         for record in reads:
-            slug = record['slug']
-            if record['parent_id']:
-                name = record['parent_id'][1]
+            parent_record = record
+            while parent_record['parent_id']:
+                parent_record = self.read(cr, uid, parent_record['parent_id'][0], ['slug','parent_id'], context=context)
+                if parent_record['slug']:
+                    name.append(parent_record['slug'])
 
-        if name:
-            names = name.split(' / ')
-            for name in names:
-                result.append(slugify(name))
-            del result[:1] #delete first element = Primary category
-            parent_slug = "/".join(result)
+        if len(name)>0:
+            name.reverse()
+            parent_slug = "/".join(name)
 
         return parent_slug
 
