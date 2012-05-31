@@ -29,6 +29,11 @@ import unicodedata
 import re
 import netsvc
 
+def to_unicode(val,enc):
+    if not isinstance(val, unicode):
+        val = unicode(val, enc)
+    return val
+
 def slugify(value):
     """
     Normalizes string, converts to lowercase, removes non-alpha characters,
@@ -62,7 +67,7 @@ class product_category(osv.osv):
         value = {}
         if not slug:
             if name:
-                slug = slugify(unicode(name,'UTF-8'))
+                slug = slugify(to_unicode(name,'UTF-8'))
             value = {'slug': slug}
         return {'value':value}
 
@@ -248,7 +253,7 @@ class product_template(osv.osv):
     def onchange_name(self, cr, uid, ids, name, slug):
         value = {}
         if not slug:
-            slug = slugify(unicode(name,'UTF-8'))
+            slug = slugify(to_unicode(name,'UTF-8'))
             value = {'slug': slug}
         return {'value':value}
 
@@ -284,10 +289,7 @@ class product_template(osv.osv):
                 products = self.pool.get('product.template').search(cr, uid, [('slug','=',vals['slug'])], context=context)
                 if len(products) > 0:
                     raise osv.except_osv(_("Alert"), _("This Slug exists. Choose another slug"))
-                slug = vals['slug']
-                if not isinstance(slug, unicode):
-                    slug = unicode(slug,'UTF-8')
-                slug = slugify(slug)
+                slug = slugify(to_unicode(vals['slug'],'UTF-8'))
                 vals['slug'] = slug
 
         return super(product_template, self).create(cr, uid, vals, context=context)
@@ -321,7 +323,7 @@ class product_template(osv.osv):
                 if len(products) > 0:
                     raise osv.except_osv(_("Alert"), _("Slug %s exists. Choose another slug") % (slug))
 
-                slug = slugify(unicode(str(slug),'UTF-8'))
+                slug = slugify(to_unicode(slug,'UTF-8'))
                 vals['slug'] = slug
 
             result = result and super(product_template, self).write(cr, uid, [id], vals, context=context)
@@ -341,7 +343,7 @@ class product_product(osv.osv):
         value = {}
         if not slug:
             if name:
-                slug = slugify(unicode(name,'UTF-8'))
+                slug = slugify(to_unicode(name,'UTF-8'))
             value = {'slug': slug}
         return {'value':value}
 

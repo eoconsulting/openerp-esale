@@ -42,7 +42,7 @@
             <field name="view_mode">tree</field>
         </record>
 
-        <menuitem action="action_esale_log" id="menu_esale_log" parent="sale.menu_action_shop_form" groups="base.group_extended" sequence="60"/>
+        <menuitem action="action_esale_log" id="menu_esale_log" parent="base.menu_sale_config_sales" groups="base.group_extended" sequence="60"/>
 
     </data>
 </openerp>

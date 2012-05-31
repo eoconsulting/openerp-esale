@@ -123,7 +123,7 @@
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_search_form_view"/>
             <field name="arch" type="xml">
-                <xpath expr="/search/group[@string='Extended Filters...']" position="after">
+                <xpath expr="/search/group[@string='Group by...']" position="before">
                     <newline/>
                     <group expand="0" string="e-Sale Filters..." groups="base.group_extended">
                         <field name="zoook_exportable"/>
