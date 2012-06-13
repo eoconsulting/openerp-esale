@@ -1,6 +1,6 @@
 ==OpenERP e-sale. Zoook==
 
-Zoook e-commerce tool is a module for OpenERP and Django. e-commerce 100% python.
+Zoook e-commerce tool is a module for OpenERP and Django, e-commerce 100% python.
 Integrated features OpenERP into esale shop (product, sale, stock, price list, ...).  Not need mapping line or syncronization... configure your esale portal and go to drink some coffe or beer.
 
 Zoook is e-commerce OpenERP. Categories and products are syncronize OpenERP to Django because if you OpenERP is off connection your e-commerce is avaible (search engines). Also, a lot of communication is catalog search (users or search enginyes). It's this feature categories, products and images sync OpenERP to Django.
@@ -10,7 +10,7 @@ Only Partners, address, price (price list), stock and sale (promotions, delivery
 Zoook is multiwebsite shop. Configure one or more Django App and connecting witch your OpenERP Sale Shop.
 
 ATENTION:
-Read first about Django. Django doc is the best documentation project: https://docs.djangoproject.com/en/1.3/
+Read first about Django. Django doc is the best documentation project: https://docs.djangoproject.com/en/1.4/
 Remember: Please, don't send us emails about Django configuration or errors about your Django configuration. 
 
 ===Features===
@@ -28,7 +28,7 @@ AGPL-3 http://www.gnu.org/licenses/agpl.html
 
 ===Requeriments===
 
-- OOOP (our develop because include more functionalities) https://github.com/zikzakmedia/ooop (this library provides connection to OpenERP Server and it's available extra features (pyro connection, pagination and order filters)
+- OOOP https://github.com/zikzakmedia/ooop (this library provides connection to OpenERP Server and it's available extra features (pyro connection, pagination and order filters)
 - XML-RPC: xmlrpclib
 - PyRO 3 (optional, but recommended). http://www.xs4all.nl/~irmen/pyro3/
 - Paramiko http://www.lag.net/paramiko/
@@ -36,25 +36,28 @@ AGPL-3 http://www.gnu.org/licenses/agpl.html
 
 ==OpenERP==
 
-- OpenERP 6.0.x server
+- OpenERP server 6.0.x or 6.1.x
 - Zoook Module (review depencies zoook openerp module)
 
 === Dependencies modules ===
 - account_payment_extension
 - base
+- base_external_mapping
 - base_vat
+- currency_numeric_code
 - delivery
 - django
 - poweremail
 - product_m2mcategories
 - product_images_olbs
 - product_attributes
+- sale_multi_shop
 - sale_payment
 - sale_promotions
 
 ==Django==
 
-- Django 1.3
+- Django 1.4
 - django-transmeta
 - django-locale
 - django-inplaceeditform
@@ -62,6 +65,9 @@ AGPL-3 http://www.gnu.org/licenses/agpl.html
 - django-south
 - django-piston
 - django-pagination
+- python-magic
+- django-filebrowser
+- python-mediawiki
 
 ===HOW TO===
 
