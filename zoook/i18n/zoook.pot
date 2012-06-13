@@ -1009,6 +1009,11 @@ msgid "Cart Description"
 msgstr "Cart Description"
 
 #. module: zoook
+#: view:product.product:0
+msgid "Checkout Description"
+msgstr "Checkout Description"
+
+#. module: zoook
 #: selection:product.category,default_sort_by:0
 msgid "Name"
 msgstr "Name"
