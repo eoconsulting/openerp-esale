@@ -1069,11 +1069,6 @@ msgid "Cart Description"
 msgstr "Cistella de la compra"
 
 #. module: zoook
-#: view:product.product:0
-msgid "Checkout Description"
-msgstr "Cistella de Checkout"
-
-#. module: zoook
 #: selection:product.category,default_sort_by:0
 msgid "Name"
 msgstr "Nom"
