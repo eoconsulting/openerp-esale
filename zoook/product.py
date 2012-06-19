@@ -151,6 +151,8 @@ class product_category(osv.osv):
             ids = [ids]
 
         top_category = self.esale_parent_category(cr, uid, ids[0])
+        if not slug:
+            slug = None
         categories = self.pool.get('product.category').search(cr, uid, [('zoook_exportable','=',True),('slug','=',slug),('id','not in',ids)])
 
         for cat in categories:
