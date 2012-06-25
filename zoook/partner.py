@@ -31,7 +31,7 @@ class res_partner(osv.osv):
     _inherit = "res.partner"
 
     _columns = {
-        'product_whistlist_ids':fields.many2many('product.template','partner_product_whistlist_rel','partner_id', 'product_id', 'Whislist'),
+        'product_wishlist_ids':fields.many2many('product.template','partner_product_wishlist_rel','partner_id', 'product_id', 'Wishlist'),
     }
 
     def dj_export_manufacturers(self, cr, uid, context=None):

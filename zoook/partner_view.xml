@@ -9,8 +9,8 @@
         <field name="arch" type="xml">
         <xpath expr="/form/notebook" position="inside">
             <page string="e-sale">
-                <separator string="Whistlist" colspan="4"/>
-                <field name="product_whistlist_ids" nolabel="1" colspan="4"/>
+                <separator string="Wishlist" colspan="4"/>
+                <field name="product_wishlist_ids" nolabel="1" colspan="4"/>
             </page>
         </xpath>
         </field>

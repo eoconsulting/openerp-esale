@@ -118,7 +118,7 @@ msgstr "Últimas categorías exportadas"
 
 #. module: zoook
 #: view:res.partner:0
-msgid "Whistlist"
+msgid "Wishlist"
 msgstr "Lista de deseos"
 
 #. module: zoook
@@ -685,7 +685,7 @@ msgid "Packing Policy"
 msgstr "Política de envío"
 
 #. module: zoook
-#: field:res.partner,product_whistlist_ids:0
+#: field:res.partner,product_wishlist_ids:0
 msgid "Whislist"
 msgstr "Lista de deseos"
 
