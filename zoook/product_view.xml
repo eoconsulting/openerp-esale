@@ -95,7 +95,7 @@
                             </page>
                             <page string="SEO">
                                 <field name="slug" colspan="4"/>
-                                <field name="metadescription" colspan="4" attrs="{'required':[('zoook_exportable','==',True)]}"/>
+                                <field name="metadescription" colspan="4"/>
                                 <field name="metakeyword" colspan="4"/>
                                 <field name="metatitle" colspan="4"/>
                             </page>
