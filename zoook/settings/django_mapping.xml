@@ -524,6 +524,7 @@ value = price</field>
             <field name='external_field'>name</field>
             <field name='type'>out</field>
             <field name='external_type'>str</field>
+            <field name='translate'>1</field>
             <field name='active'>1</field>
         </record>
 
