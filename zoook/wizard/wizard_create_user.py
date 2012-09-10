@@ -42,14 +42,20 @@ class create_user_wizard(osv.osv_memory):
 
     def _col_get(self, cr, uid, context=None):
         result = []
-        cols = self.pool.get('res.partner.address').search(cr, uid, [('partner_id','=',context['partner_id'])])
-        for col in self.pool.get('res.partner.address').browse(cr, uid, cols):
-            if col.name:
-                name = col.name
-            else:
-                name = "/"
-            result.append( (col.id, name) )
-        result.sort()
+        partner_id = context.get('partner_id')
+        if partner_id:
+            cols = self.pool.get('res.partner.address').search(cr, uid, [('partner_id','=',partner_id)])
+            for col in self.pool.get('res.partner.address').browse(cr, uid, cols):
+                if col.name:
+                    name = col.name
+                else:
+                    name = self.pool.get('res.partner').browse(cr, uid, partner_id).name
+                    if col.type:
+                        name = "%s / %s" % (col.type, name)
+                    if col.email:
+                        name = "%s <%s>" % (name, col.email)
+                result.append( (col.id, name) )
+            result.sort()
         return result
 
     _columns = {
@@ -95,7 +101,10 @@ class create_user_wizard(osv.osv_memory):
 
         form = self.browse(cr, uid, ids[0])
 
-        partner_address = self.pool.get('res.partner.address').browse(cr, uid, form.partner_address_id)
+        partner_address_id = form.partner_address_id
+        if type(partner_address_id) != int:
+            partner_address_id = int(partner_address_id)
+        partner_address = self.pool.get('res.partner.address').browse(cr, uid, partner_address_id)
         partner = partner_address.partner_id
 
         if partner.dj_username or partner.dj_email:

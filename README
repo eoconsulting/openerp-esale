@@ -28,7 +28,7 @@ AGPL-3 http://www.gnu.org/licenses/agpl.html
 
 ===Requeriments===
 
-- OOOP https://github.com/zikzakmedia/ooop (this library provides connection to OpenERP Server and it's available extra features (pyro connection, pagination and order filters)
+- OOOP https://github.com/eoconsulting/ooop (this library provides connection to OpenERP Server and it's available extra features (pyro connection, pagination and order filters)
 - XML-RPC: xmlrpclib
 - PyRO 3 (optional, but recommended). http://www.xs4all.nl/~irmen/pyro3/
 - Paramiko http://www.lag.net/paramiko/
