@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
@@ -25,11 +25,11 @@
 {
     "name" : "ZoooK - OpenERP e-sale",
     "version" : "1.0",
-    "author" : "Zikzakmedia SL",
-    "website" : "www.zikzakmedia.com",
+    "author" : "Zikzakmedia SL / Enterprise Objects Consulting",
+    "website" : "http://www.eoconsulting.com.ar",
     "category" : "Generic Modules",
     "description": """
-    e-commerce management 100% integration by OpenERP.
+    E-commerce management 100% integration by OpenERP.
     www.zikzakmedia.com/es/openerp-tiendas-virtuales
     """,
     "license" : "AGPL-3",
@@ -47,6 +47,8 @@
         "sale_margin",
         "sale_payment",
         "sale_promotions",
+        "web_wysiwyg",
+        "web_display_html",
     ],
     "init_xml" : [],
     "demo_xml" : [],

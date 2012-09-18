@@ -74,6 +74,12 @@
                     <xpath expr="/form/group/field[@name='purchase_ok']" position="after">
                         <field name="zoook_exportable" attrs="{'invisible':[('zoook_exportable','==',True)]}"/>
                     </xpath>
+                    <xpath expr="//field[@name='description_sale']" position="replace">
+                        <html>
+                            <a onclick="javascript:toggle_ckeditor();" class="wysiwyg_button wysiwyg_button_off oe_button">WYSIWYG on</a>
+                        </html>
+                        <field name="description_sale" widget="text_WYSIWYG" colspan="4" nolabel="1"/>
+                    </xpath>
                 </data>
             </field>
         </record>
@@ -91,7 +97,10 @@
                                 <field name="visibility"/>
                                 <field name="zoook_status"/>
                                 <separator string="Short Description" colspan="4" />
-                                <field name="shortdescription" colspan="4" nolabel="1" attrs="{'required':[('zoook_exportable','==',True)]}"/>
+                                <html>
+                                    <a onclick="javascript:toggle_ckeditor();" class="wysiwyg_button wysiwyg_button_off oe_button">WYSIWYG on</a>
+                                </html>
+                                <field name="shortdescription" widget="text_WYSIWYG" colspan="4" nolabel="1" attrs="{'required':[('zoook_exportable','==',True)]}"/>
                             </page>
                             <page string="SEO">
                                 <field name="slug" colspan="4"/>
@@ -117,23 +126,6 @@
             </field>
         </record>
 
-        <!-- Product Product-->
-       <record model="ir.ui.view" id="product_product_search_zoook" >
-            <field name="name">product.product.search.zoook</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_search_form_view"/>
-            <field name="arch" type="xml">
-                <xpath expr="/search/group[@string='Group by...']" position="before">
-                    <newline/>
-                    <group expand="0" string="e-Sale Filters..." groups="base.group_extended">
-                        <field name="zoook_exportable"/>
-                        <field name="zoook_status"/>
-                        <field name="visibility"/>
-                    </group>
-                </xpath>
-            </field>
-        </record>
-
         <record id="product_product_form_zoook" model="ir.ui.view">
             <field name="name">product.product.form.zoook</field>
             <field name="model">product.product</field>
@@ -149,6 +141,12 @@
                     </xpath>
                     <xpath expr="/form/group/group/field[@name='default_code']" position="replace">
                         <field name="default_code" attrs="{'required':[('zoook_exportable','==',True)]}"/>
+                    </xpath>
+                    <xpath expr="//field[@name='description_sale']" position="replace">
+                        <html>
+                            <a onclick="javascript:toggle_ckeditor();" class="wysiwyg_button wysiwyg_button_off oe_button">WYSIWYG on</a>
+                        </html>
+                        <field name="description_sale" widget="text_WYSIWYG" colspan="4" nolabel="1"/>
                     </xpath>
                 </data>
             </field>
@@ -167,9 +165,12 @@
                                 <field name="visibility" attrs="{'required':[('zoook_exportable','==',True)]}"/>
                                 <field name="zoook_sequence"/>
                                 <field name="zoook_status"/>
-                                <field name="cartdescription" string="Checkout Description"/>
+                                <field name="cartdescription" string="Checkout Description"/> 
                                 <separator string="Short Description" colspan="4" />
-                                <field name="shortdescription" colspan="4" nolabel="1" attrs="{'required':[('zoook_exportable','==',True)]}"/>
+                                <html>
+                                    <a onclick="javascript:toggle_ckeditor();" class="wysiwyg_button wysiwyg_button_off oe_button">WYSIWYG on</a>
+                                </html>
+                                <field name="shortdescription" widget="text_WYSIWYG" colspan="4" nolabel="1" attrs="{'required':[('zoook_exportable','==',True)]}"/>
                             </page>
                             <page string="SEO">
                                 <field name="slug" colspan="4" attrs="{'required':[('zoook_exportable','==',True)]}"/>

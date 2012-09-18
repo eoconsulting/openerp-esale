@@ -54,6 +54,9 @@ AGPL-3 http://www.gnu.org/licenses/agpl.html
 - sale_multi_shop
 - sale_payment
 - sale_promotions
+- web_wysiwyg
+- web_display_html
+
 
 ==Django==
 
