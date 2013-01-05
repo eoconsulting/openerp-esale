@@ -511,6 +511,16 @@ value = price</field>
 
         </record>
 
+        <record model='base.external.mapping.line' id='djlpp_variants'>
+            <field name='mapping_id' ref='zoook.dj05'/>
+            <field name='field_id' search="[('model_id','=','product.product'),('name','=','variants')]" model='ir.model.fields'/>
+            <field name='external_field'>variants</field>
+            <field name='type'>out</field>
+            <field name='external_type'>str</field>
+            <field name='active'>1</field>
+            <field name='translate'>1</field>
+        </record>
+
 <!--Product Images-->
         <record model='base.external.mapping' id='dj07'>
             <field name='name'>zoook.product.images</field>

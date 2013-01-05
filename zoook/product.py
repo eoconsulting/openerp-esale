@@ -339,6 +339,7 @@ class product_product(osv.osv):
 
     _columns = {
         'cartdescription': fields.char('Cart Description', size=256, translate=True),
+        'variants': fields.char('Variants', size=64, translate=True),
     }
 
     def onchange_name(self, cr, uid, ids, name, slug):
@@ -415,11 +416,11 @@ class product_product(osv.osv):
 
         return super(product_product, self).copy(cr, uid, id, default, context)
 
-    def unlink(self, cr, uid, ids, context=None):
-        """Not unlink products if are exportable"""
-        for product in self.browse(cr, uid, ids, context):
-            if product.zoook_exportable:
-                raise osv.except_osv(_("Alert"), _("To Unlink this product, unmark active field and select none option in visibility field"))
-        return super(product_product, self).unlink(cr, uid, ids, context)
+#    def unlink(self, cr, uid, ids, context=None):
+#        """Not unlink products if are exportable"""
+#        for product in self.browse(cr, uid, ids, context):
+#            if product.zoook_exportable:
+#                raise osv.except_osv(_("Alert"), _("To Unlink this product, unmark active field and select none option in visibility field"))
+#        return super(product_product, self).unlink(cr, uid, ids, context)
 
 product_product()
