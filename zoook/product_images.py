@@ -37,7 +37,8 @@ class product_images(osv.osv):
     _defaults = {
         'base_image':lambda * a:True,
         'thumb_image':lambda * a:True,
-        'exclude':lambda * a:False
+        'exclude':lambda * a:False,
+        'link': lambda *a: True,
     }
 
 product_images()
