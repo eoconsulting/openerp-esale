@@ -47,29 +47,32 @@ def slugify(value):
 class product_category(osv.osv):
     _inherit = "product.category"
 
-    def collect_children(self, category, children=None):
+    def collect_children(self, category, children=None, context=None):
         if children is None:
             children = []
 
         for child in category.child_id:
             children.append(child.id)
-            self.collect_children(child, children)
+            self.collect_children(child, children, context)
 
         return children
 
     def _get_recursive_cat_children_ids(self, cr, uid, ids, name, args, context=None):
         res = {}
-        for category in self.browse(cr, uid, ids):
-            res[category.id] = self.collect_children(category, [category.id])
+        for category in self.browse(cr, uid, ids, context=context):
+            res[category.id] = self.collect_children(category, [category.id], context=context)
         return res
 
-    def onchange_name(self, cr, uid, ids, name, slug):
+    def onchange_name(self, cr, uid, ids, name, slug, context=None):
         value = {}
         if not slug:
             if name:
                 slug = slugify(to_unicode(name,'UTF-8'))
             value = {'slug': slug}
-        return {'value':value}
+        return {
+            'value':value,
+            'context':context,
+        }
 
     _columns = {
         'zoook_exportable':fields.boolean('Available e-sale', change_default=True,),
@@ -119,7 +122,7 @@ class product_category(osv.osv):
 
         return parent_slug
 
-    def esale_parent_category(self, cr, uid, id):
+    def esale_parent_category(self, cr, uid, id, context=None):
         """Get ID TOP Parent Category
         :param id: int
         :return id
@@ -127,13 +130,13 @@ class product_category(osv.osv):
         top_id = False
         parent_id = False
 
-        cat_parent_id = self.browse(cr, uid, id).parent_id
+        cat_parent_id = self.browse(cr, uid, id, context=context).parent_id
         if cat_parent_id:
             parent_id = cat_parent_id.id
 
         while(parent_id):
             top_id = parent_id
-            cat_parent_id = self.browse(cr, uid, top_id).parent_id
+            cat_parent_id = self.browse(cr, uid, top_id, context=context).parent_id
             parent_id = cat_parent_id.id
 
         return top_id
@@ -150,13 +153,13 @@ class product_category(osv.osv):
         if not isinstance(ids,list):
             ids = [ids]
 
-        top_category = self.esale_parent_category(cr, uid, ids[0])
+        top_category = self.esale_parent_category(cr, uid, ids[0], context=context)
         if not slug:
             slug = None
-        categories = self.pool.get('product.category').search(cr, uid, [('zoook_exportable','=',True),('slug','=',slug),('id','not in',ids)])
+        categories = self.pool.get('product.category').search(cr, uid, [('zoook_exportable','=',True),('slug','=',slug),('id','not in',ids)], context=context)
 
         for cat in categories:
-            if top_category == self.esale_parent_category(cr, uid, cat):
+            if top_category == self.esale_parent_category(cr, uid, cat, context=context):
                 return True
 
         if len(categories)>0:
@@ -200,7 +203,7 @@ class product_category(osv.osv):
 
         super(product_category, self).write(cr, uid, ids, vals, context=context)
 
-        for cat in self.browse(cr, uid, ids):
+        for cat in self.browse(cr, uid, ids, context=context):
             if cat.zoook_exportable:
                 slug = vals.get('slug', False) or cat.slug
                 parent = vals.get('parent_id',False)
@@ -252,12 +255,15 @@ product_category()
 class product_template(osv.osv):
     _inherit = "product.template"
 
-    def onchange_name(self, cr, uid, ids, name, slug):
+    def onchange_name(self, cr, uid, ids, name, slug, context=None):
         value = {}
         if not slug:
             slug = slugify(to_unicode(name,'UTF-8'))
             value = {'slug': slug}
-        return {'value':value}
+        return {
+            'value':value,
+            'context':context,
+        }
 
     _columns = {
         'codes': fields.text('Codes'),
@@ -287,7 +293,7 @@ class product_template(osv.osv):
         if 'slug' in vals and vals['slug']:
             if vals.get('zoook_exportable', False):
                 #Set user's current lang.
-                context['lang'] = self.pool.get('res.users').browse(cr, uid, uid).context_lang
+                context['lang'] = self.pool.get('res.users').browse(cr, uid, uid, context=context).context_lang
                 products = self.pool.get('product.template').search(cr, uid, [('slug','=',vals['slug'])], context=context)
                 if len(products) > 0:
                     raise osv.except_osv(_("Alert"), _("This Slug exists. Choose another slug"))
@@ -315,7 +321,7 @@ class product_template(osv.osv):
                 if 'slug' in vals:
                     slug =  vals['slug']
                 else:
-                    prod_template = self.pool.get('product.template').browse(cr, uid, id, context)
+                    prod_template = self.pool.get('product.template').browse(cr, uid, id, context=context)
                     slug = prod_template.slug
 
             if check_slug:
@@ -342,13 +348,16 @@ class product_product(osv.osv):
         'variants': fields.char('Variants', size=64, translate=True),
     }
 
-    def onchange_name(self, cr, uid, ids, name, slug):
+    def onchange_name(self, cr, uid, ids, name, slug, context=None):
         value = {}
         if not slug:
             if name:
                 slug = slugify(to_unicode(name,'UTF-8'))
             value = {'slug': slug}
-        return {'value':value}
+        return {
+            'value':value,
+            'context':context,
+        }
 
     def zoook_compute_price(self, cr, uid, shop_id, products, partner_id=None, context=None):
         if context is None:
@@ -366,14 +375,14 @@ class product_product(osv.osv):
 
         shop = sale_shop_obj.browse(cr, uid, shop_id)
 
-        pricelist_id = self.pool.get('res.partner').browse(cr, uid, partner_id).property_product_pricelist.id
+        pricelist_id = self.pool.get('res.partner').browse(cr, uid, partner_id, context=context).property_product_pricelist.id
         if not pricelist_id:
             pricelist_id = shop.pricelist_id.id
             if not pricelist_id:
                 logger.notifyChannel("Zoook", netsvc.LOG_WARNING, _("Not Price List available Partner or Shop."))
                 return False
 
-        pricelist = product_pricelist_obj.browse(cr, uid, pricelist_id)
+        pricelist = product_pricelist_obj.browse(cr, uid, pricelist_id, context=context)
 
         result = {}
 
@@ -384,8 +393,8 @@ class product_product(osv.osv):
                 #~ Product Taxes is computed by product.product, not product.template.
                 #~ Searh all product.product and get price less
                 products = []
-                prods = product_obj.search(cr, uid, [('product_tmpl_id','=',product['product_id'])])
-                for prod in product_obj.browse(cr, uid, prods):
+                prods = product_obj.search(cr, uid, [('product_tmpl_id','=',product['product_id'])], context=context)
+                for prod in product_obj.browse(cr, uid, prods, context=context):
                     price = product_pricelist_obj.price_get(cr, uid, [pricelist_id], prod.id, 1.0)[pricelist_id]
                     if shop.special_price: #if this sale shop available Special Price
                         if prod.special_price != 0.0 and prod.special_price < price:
@@ -394,7 +403,7 @@ class product_product(osv.osv):
                 products = sorted(products, key=lambda k: k['price'])
 
                 if shop.zoook_tax_include:
-                    product_template = product_template_obj.browse(cr, uid, product['product_id'])
+                    product_template = product_template_obj.browse(cr, uid, product['product_id'], context=context)
                     price_compute_all = self.pool.get('account.tax').compute_all(cr, uid, product_template.taxes_id, products[0]['price'], product['quantity'], address_id=None, product=product_template, partner=None)
 
                     product_price = price_compute_all['total_included']
