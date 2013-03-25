@@ -31,7 +31,10 @@
                                     </group>
                                     <group col="1" colspan="1">
                                         <separator string="Description" />
-                                        <field name="description" colspan="1" nolabel="1" />
+                                        <html>
+                                            <a onclick="javascript:toggle_ckeditor();" class="wysiwyg_button wysiwyg_button_off oe_button">WYSIWYG on</a>
+                                        </html>
+                                        <field name="description" colspan="1" nolabel="1" widget="text_WYSIWYG" />
                                         <group col="4" colspan="1">
                                             <field name="status" colspan="1" />
                                         </group>
