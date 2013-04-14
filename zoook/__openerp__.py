@@ -44,6 +44,7 @@
         "product_special_price",
         "product_m2mcategories",
         "product_images_olbs",
+        "product_variant_name",
         "sale_margin",
         "sale_payment",
         "sale_promotions",

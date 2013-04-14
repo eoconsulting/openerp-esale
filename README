@@ -51,11 +51,14 @@ AGPL-3 http://www.gnu.org/licenses/agpl.html
 - product_m2mcategories
 - product_images_olbs
 - product_attributes
+- product_variant_name
 - sale_multi_shop
 - sale_payment
 - sale_promotions
 - web_wysiwyg
 - web_display_html
+
+Check our versions of these modules in https://github.com/eoconsulting
 
 
 ==Django==
@@ -79,9 +82,7 @@ AGPL-3 http://www.gnu.org/licenses/agpl.html
 Copy zoook module and dependencies in openerp-server/modules. Run OpenERP server, reload list of modules and install Zoook module
 
 =Django App=
-This sources contains an "app" folder, with the official Django App, but is incomplete
-(don't have the HTML templates and the payments methods), and have many errors, use instance
-ours the "Django Zoook" app, in https://github.com/eoconsulting/django-zoook. 
+The sources of the "Django Zoook" app is in https://github.com/eoconsulting/django-zoook . 
  
 1. Create symbolic link at inplaceeditform library in static dir:
 static$ ln -s /usr/local/lib/python2.6/dist-packages/django_inplaceedit-0.XX-py2.6.egg/inplaceeditform/media/ inplaceeditform
@@ -128,9 +129,9 @@ Super Users are available access to Catalog Admin. This section is only check ca
 ==About==
 This sources are available in https://github.com/eoconsulting/openerp-esale
 
-The fixed Django Zoook Apps part is in https://github.com/eoconsulting/django-zoook
+The Django Zoook Apps part is in https://github.com/eoconsulting/django-zoook
 
-This software was original writed by *Zikzakmedia*.
+This is a fork by *Enterprise Objects Consulting*, the software was original writed by *Zikzakmedia*.
 
 __________
 
