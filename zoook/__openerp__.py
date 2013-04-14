@@ -30,7 +30,7 @@
     "category" : "Generic Modules",
     "description": """
     E-commerce management 100% integration by OpenERP.
-    www.zikzakmedia.com/es/openerp-tiendas-virtuales
+    https://github.com/eoconsulting/django-zoook
     """,
     "license" : "AGPL-3",
     "depends" : [
@@ -44,6 +44,7 @@
         "product_special_price",
         "product_m2mcategories",
         "product_images_olbs",
+        "product_variant_name",
         "sale_margin",
         "sale_payment",
         "sale_promotions",
