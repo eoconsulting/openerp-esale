@@ -69,11 +69,9 @@ Check our versions of these modules in https://github.com/eoconsulting
 - django-inplaceeditform
 - django-maintenancemode
 - django-south
-- django-piston
 - django-pagination
 - python-magic
 - django-filebrowser
-- python-mediawiki
 
 ===HOW TO===
 
