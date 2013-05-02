@@ -28,6 +28,7 @@ from tools.translate import _
 import unicodedata
 import re
 import netsvc
+import time
 
 def to_unicode(val,enc):
     if not isinstance(val, unicode):
@@ -333,6 +334,15 @@ class product_template(osv.osv):
 
                 slug = slugify(to_unicode(slug,'UTF-8'))
                 vals['slug'] = slug
+
+            # Fix bug when a multi-product price is edited,
+            # then all subproduct price must be re-exported because
+            # Django Zoook persist the price by product.product instead
+            # by product.template like OpenERP
+            if 'list_price' in vals:
+                prod_template = self.pool.get('product.template').browse(cr, uid, id, context=context)
+                if prod_template.zoook_exportable and prod_template.is_multi_variants:
+                    cr.execute('update product_product set write_date=%s where product_tmpl_id=%s', (time.strftime('%Y-%m-%d %H:%M:%S'), id))
 
             result = result and super(product_template, self).write(cr, uid, [id], vals, context=context)
 
