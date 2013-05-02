@@ -33,10 +33,11 @@ import tools
 import pooler
 import threading
 
-LOGGER = netsvc.Logger()
+import logging
 
 class sale_shop(osv.osv):
-    _inherit = "sale.shop"
+    _inherit = 'sale.shop'
+    _logger = logging.getLogger('zoook.sale.shop')
     
     _columns = {
         'zoook_shop': fields.boolean('OpenERP e-Sale'),
@@ -96,11 +97,11 @@ class sale_shop(osv.osv):
             test = self.pool.get('django.connect').ssh_command(cr, uid, sale.id, values, context)
 
             if test == 'success':
-                LOGGER.notifyChannel('e-Sale', netsvc.LOG_INFO, "Connection to server is successfull.")
+                self._logger.info("Connection to server is successfull.")
                 raise osv.except_osv(_('Ok!'), _('Connection to server are successfully.'))
                 return True
             else:
-                LOGGER.notifyChannel('e-Sale', netsvc.LOG_ERROR, "Error connection to server.")
+                self._logger.error("Error connection to server.")
                 raise osv.except_osv(_('Error!'), _('Error connection to server.'))
                 return False
 
@@ -142,10 +143,10 @@ class sale_shop(osv.osv):
             conf = self.pool.get('django.connect').ssh_command(cr, uid, sale.id, values, context)
 
             if conf:
-                LOGGER.notifyChannel('e-Sale', netsvc.LOG_INFO, "Conf Export Running.")
+                self._logger.info("Conf Export Running.")
                 return True
             else:
-                LOGGER.notifyChannel('e-Sale', netsvc.LOG_ERROR, "Error connection to server.")
+                self._logger.error("Error connection to server.")
                 return False
 
     def dj_export_countries(self, cr, uid, ids, context=None):
@@ -214,10 +215,10 @@ class sale_shop(osv.osv):
         cr.close()
 
         if product:
-            LOGGER.notifyChannel('e-Sale', netsvc.LOG_INFO, "Product Export Running.")
+            self._logger.info("Product Export Running.")
             return True
         else:
-            LOGGER.notifyChannel('e-Sale', netsvc.LOG_ERROR, "Error connection to server.")
+            self._logger.error("Error connection to server.")
             return False
 
     def dj_export_products(self, cr, uid, ids, prods=[], context=None):
@@ -265,7 +266,7 @@ class sale_shop(osv.osv):
 
             self.write(cr, uid, [shop.id], {'zoook_last_export_products': time.strftime('%Y-%m-%d %H:%M:%S')})
 
-            LOGGER.notifyChannel('e-Sale', netsvc.LOG_INFO, "Products: %s" % (products_shop) )
+            self._logger.debug("Products: %s" % (products_shop))
 
         return products_shop
 
@@ -310,10 +311,10 @@ class sale_shop(osv.osv):
         cr.close()
 
         if category:
-            LOGGER.notifyChannel('e-Sale', netsvc.LOG_INFO, "Category Export Running.")
+            self._logger.info("Category Export Running.")
             return True
         else:
-            LOGGER.notifyChannel('e-Sale', netsvc.LOG_ERROR, "Error connection to server.")
+            self._logger.error("Error connection to server.")
             return False
 
     def dj_export_categories(self, cr, uid, ids, context=None):
@@ -335,11 +336,11 @@ class sale_shop(osv.osv):
                     if category.zoook_exportable:
                         categories.append(categ['id'])
                     else:
-                        LOGGER.notifyChannel('e-Sale', netsvc.LOG_ERROR, "Category %s is in tree category but not exportable. Not added" % (categ['id']) )
+                        self._logger.error("Category %s is in tree category but not exportable. Not added" % (categ['id']) )
 
             self.write(cr, uid, [shop.id], {'zoook_last_export_categories': time.strftime('%Y-%m-%d %H:%M:%S')})
 
-            LOGGER.notifyChannel('e-Sale', netsvc.LOG_INFO, "Categories: %s" % (categories) )
+            self._logger.debug("Categories: %s" % (categories) )
 
         return categories
 
@@ -384,10 +385,10 @@ class sale_shop(osv.osv):
         cr.close()
 
         if image:
-            LOGGER.notifyChannel('e-Sale', netsvc.LOG_INFO, "Image Export Running.")
+            self._logger.info("Image Export Running.")
             return True
         else:
-            LOGGER.notifyChannel('e-Sale', netsvc.LOG_ERROR, "Error connection to server.")
+            self._logger.error("Error connection to server.")
             return False
 
     def dj_export_images(self, cr, uid, ids, prods=[], context=None):
@@ -421,7 +422,7 @@ class sale_shop(osv.osv):
                     if last_exported_time < image['create_date'][:19] or (image['write_date'] and last_exported_time < image['write_date'][:19]):
                         images.append(image['id'])
 
-                LOGGER.notifyChannel('e-Sale', netsvc.LOG_INFO, "Images: %s" % (images) )
+                self._logger.debug("Images: %s" % (images) )
 
                 self.write(cr, uid, [shop.id], {'zoook_last_export_images': time.strftime('%Y-%m-%d %H:%M:%S')})
 
@@ -465,6 +466,7 @@ sale_shop()
 
 class sale_order(osv.osv):
     _inherit = 'sale.order'
+    _logger = logging.getLogger('zoook.sale.order')
 
     _columns = {
         'payment_state': fields.selection([
@@ -559,11 +561,11 @@ class sale_order(osv.osv):
 
         order_id = self.write(cr, uid, [order.id], values)
         
-        LOGGER.notifyChannel("Sale Order", netsvc.LOG_INFO,_("Order Payment: %s") % (order.name))
+        self._logger.info(_("Order Payment: %s") % (order.name))
 
         # change status sale order
         if shop_pay.confirm:
-            LOGGER.notifyChannel("Sale Order", netsvc.LOG_INFO,_("Order %s change status: Done") % (order.name))
+            self._logger.info(_("Order %s change status: Done") % (order.name))
             wf_service.trg_validate(uid, 'sale.order', order.id, 'order_confirm', cr)
 
         return True
@@ -574,7 +576,7 @@ class sale_order(osv.osv):
         """
 
         try:
-            LOGGER.notifyChannel("Sale Order", netsvc.LOG_INFO,_("Order %s change status: Cancel") % (order))
+            self._logger.info(_("Order %s change status: Cancel") % (order))
             netsvc.LocalService("workflow").trg_validate(uid, 'sale.order', order, 'cancel', cr)
             return True
         except:
@@ -592,8 +594,8 @@ class sale_order_line(osv.osv):
 sale_order_line()
 
 class zoook_sale_shop_payment_type(osv.osv):
-    _name = "zoook.sale.shop.payment.type"
-
+    _name = 'zoook.sale.shop.payment.type'
+    _logger = logging.getLogger('zoook.sale.shop.payment.type')
     _description = "Zoook Sale Shop Payment Type"
     _rec_name = "payment_type_id"
  
@@ -722,11 +724,11 @@ class zoook_sale_shop_payment_type(osv.osv):
             try:
                 self.pool.get('sale.order.line').create(cr, uid, values)
                 comment = "Add commission payment %s - %s: %s" % (order.id, payment.payment_type_id.name, price)
-                LOGGER.notifyChannel('e-Sale', netsvc.LOG_INFO, comment)
+                self._logger.info(comment)
                 self.pool.get('esale.log').create_log(cr, uid, order.shop_id.id, 'sale.order', order.id, 'done', comment)
             except:
                 comment = "Add commission payment %s - %s: %s" % (order.id, payment.payment_type_id.name, price)
-                LOGGER.notifyChannel('e-Sale', netsvc.LOG_ERROR, comment)
+                self._logger.error(comment)
                 self.pool.get('esale.log').create_log(cr, uid, order.shop_id.id, 'sale.order', order.id, 'error', comment)
 
         return True

@@ -26,16 +26,15 @@ from osv import osv, fields
 from datetime import datetime
 from tools.translate import _
 
-import netsvc
+import logging
 import time
 import tools
 import pooler
 import threading
 
-LOGGER = netsvc.Logger()
-
 class sale_shop(osv.osv):
     _inherit = "sale.shop"
+    _logger = logging.getLogger('zoook.trademark.sale.shop')
     
     def zoook_export_manufacturers(self, cr, uid, ids, context=None):
         """
@@ -78,10 +77,10 @@ class sale_shop(osv.osv):
         cr.close()
 
         if manufacturer:
-            LOGGER.notifyChannel('ZoooK Connection', netsvc.LOG_INFO, "Manufacturers Export Running.")
+            self._logger.info("Manufacturers Export Running.")
             return True
         else:
-            LOGGER.notifyChannel('ZoooK Connection', netsvc.LOG_ERROR, "Error connection to server.")
+            self._logger.error("Error connection to server.")
             return False
 
 sale_shop()

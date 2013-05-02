@@ -25,16 +25,15 @@ from osv import osv, fields
 from datetime import datetime
 from tools.translate import _
 
-import netsvc
+import logging
 import time
 import tools
 import pooler
 import threading
 
-LOGGER = netsvc.Logger()
-
 class sale_shop(osv.osv):
     _inherit = "sale.shop"
+    _logger = logging.getLogger('zoook.attachment.sale.shop')
     
     _columns = {
         'esale_last_export_attachment': fields.datetime('Last Export Attachment'),
@@ -81,10 +80,10 @@ class sale_shop(osv.osv):
         cr.close()
 
         if product:
-            LOGGER.notifyChannel('e-Sale', netsvc.LOG_INFO, "Attachment Export Running.")
+            self._logger.info("Attachment Export Running.")
             return True
         else:
-            LOGGER.notifyChannel('e-Sale', netsvc.LOG_ERROR, "Error connection to server.")
+            self._logger.error("Error connection to server.")
             return False
 
     def dj_export_attachments(self, cr, uid, ids, resources=[], context=None):
@@ -117,7 +116,7 @@ class sale_shop(osv.osv):
  
             self.write(cr, uid, [shop.id], {'esale_last_export_attachment': time.strftime('%Y-%m-%d %H:%M:%S')})
 
-            LOGGER.notifyChannel('e-Sale', netsvc.LOG_INFO, "Attachment: %s" % (res) )
+            self._logger.debug("Attachment: %s" % (res) )
 
         return res
 

@@ -23,12 +23,11 @@
 
 from osv import osv, fields
 from tools.translate import _
-
-import netsvc
-LOGGER = netsvc.Logger()
+import logging
 
 class res_partner(osv.osv):
     _inherit = "res.partner"
+    _logger = logging.getLogger('zoook.res.partner')
 
     _columns = {
         'product_wishlist_ids':fields.many2many('product.template','partner_product_wishlist_rel','partner_id', 'product_id', 'Wishlist'),
@@ -44,7 +43,7 @@ class res_partner(osv.osv):
         results = []
         partner_obj = self.pool.get('res.partner')
 
-        LOGGER.notifyChannel('e-Sale', netsvc.LOG_INFO, "Manufacturers running")
+        self._logger.info("Manufacturers running")
 
         manufacturers = partner_obj.search(cr, uid, [('manufacturer','=',True)])
         for partner in partner_obj.browse(cr, uid, manufacturers):
@@ -53,7 +52,7 @@ class res_partner(osv.osv):
                 'name': partner.name,
             })
 
-        LOGGER.notifyChannel('e-Sale', netsvc.LOG_INFO, "Manufacturers End")
+        self._logger.info("Manufacturers End")
 
         return results
 
