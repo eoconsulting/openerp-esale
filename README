@@ -15,7 +15,7 @@ Remember: Please, don't send us emails about Django configuration or errors abou
 
 ===Features===
 
-==Licence==
+==License==
 
 AGPL-3 http://www.gnu.org/licenses/agpl.html
 
@@ -32,11 +32,11 @@ AGPL-3 http://www.gnu.org/licenses/agpl.html
 - XML-RPC: xmlrpclib
 - PyRO 3 (optional, but recommended). http://www.xs4all.nl/~irmen/pyro3/
 - Paramiko http://www.lag.net/paramiko/
-- Recaptcha http://pypi.python.org/packages/source/r/recaptcha-client/
+- Recaptcha http://pypi.python.org/packages/source/r/recaptcha-client/ (optional)
 
 ==OpenERP==
 
-- OpenERP server 6.0.x or 6.1.x
+- OpenERP server 6.0.x (unmaintained) or 6.1.x
 - Zoook Module (review depencies zoook openerp module)
 
 === Dependencies modules ===
@@ -81,15 +81,13 @@ Copy zoook module and dependencies in openerp-server/modules. Run OpenERP server
 
 =Django App=
 The sources of the "Django Zoook" app is in https://github.com/eoconsulting/django-zoook . 
- 
-1. Create symbolic link at inplaceeditform library in static dir:
-static$ ln -s /usr/local/lib/python2.6/dist-packages/django_inplaceedit-0.XX-py2.6.egg/inplaceeditform/media/ inplaceeditform
-2. Edit config.py (database, OpenERP connection, sale ID, ....)
-3. check py files in sync dir need execute permisions
-4. Create tables: python manage.py syncdb
-5. Important! Run configuration.py. Add new values site django (extra site fields)
-6. Run Server: python manage.py runserver
-7. Check documentation about migrations app (south)
+
+1. Edit config.py (database, OpenERP connection, sale ID, ....)
+2. check py files in sync dir need execute permisions
+3. Create tables: python manage.py syncdb
+4. Important! Run configuration.py. Add new values site django (extra site fields)
+5. Run Server: python manage.py runserver
+6. Check documentation about migrations app (south)
 
 ==Configuration==
 =OpenERP=
@@ -99,16 +97,16 @@ static$ ln -s /usr/local/lib/python2.6/dist-packages/django_inplaceedit-0.XX-py2
 4. Sale Order or Invoices sequence not use / (for example, SO/001). URL navigator get order number and / it's a path url and broken.
 
 =Django=
-1. Create a module name "catalog.right". This module is requiered in default template.
+1. Create a module name "catalog.right" if you want display additional information in the catalog.
 
 ==Utilization==
 Sales, partners, ... are creating in real time e-sale to OpenERP. Only nedd sync categories and products.
 Go to sale shop OpenERP for sync. Remember Django Sync dir need execute permisions.
-Also, remember see OpenERP logs and Django logs
+Also, remember see OpenERP logs and Django logs.
 
 ==Template==
 =Modules =
-Add {% module [position]%} templates for load modules
+Add {% module [position]%} templates for load modules (optional).
 
 ==Active Payments==
 Default configuration not available payments active. How to active payments?
