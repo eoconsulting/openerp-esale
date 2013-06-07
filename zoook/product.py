@@ -1,10 +1,11 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
 #    Copyright (c) 2011 Zikzakmedia S.L. (http://zikzakmedia.com) All Rights Reserved.
 #                       Raimon Esteve <resteve@zikzakmedia.com>
 #                       Jesus Martín <jmartin@zikzakmedia.com>
+#                  2013 Mariano Ruiz <mrsarm@gmail.com>
 #    $Id$
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -27,7 +28,7 @@ from tools.translate import _
 
 import unicodedata
 import re
-import netsvc
+import logging
 import time
 
 def to_unicode(val,enc):
@@ -352,6 +353,7 @@ product_template()
 
 class product_product(osv.osv):
     _inherit = "product.product"
+    _logger = logging.getLogger('zoook.product.product')
 
     _columns = {
         'cartdescription': fields.char('Cart Description', size=256, translate=True),
@@ -376,27 +378,28 @@ class product_product(osv.osv):
         if partner_id is None:
             partner_id = []
 
-        logger = netsvc.Logger()
-
         product_obj = self.pool.get('product.product')
         product_template_obj = self.pool.get('product.template')
         sale_shop_obj = self.pool.get('sale.shop')
         product_pricelist_obj = self.pool.get('product.pricelist')
+        account_tax_obj = self.pool.get('account.tax')
+        decimal_precision_obj = self.pool.get('decimal.precision')
+        res_partner_obj = self.pool.get('res.partner')
 
         shop = sale_shop_obj.browse(cr, uid, shop_id)
 
-        pricelist_id = self.pool.get('res.partner').browse(cr, uid, partner_id, context=context).property_product_pricelist.id
+        pricelist_id = res_partner_obj.browse(cr, uid, partner_id, context=context).property_product_pricelist.id
         if not pricelist_id:
             pricelist_id = shop.pricelist_id.id
             if not pricelist_id:
-                logger.notifyChannel("Zoook", netsvc.LOG_WARNING, _("Not Price List available Partner or Shop."))
+                self._logger.warn(_("Not Price List available Partner or Shop."))
                 return False
 
         pricelist = product_pricelist_obj.browse(cr, uid, pricelist_id, context=context)
 
         result = {}
 
-        decimal = self.pool.get('decimal.precision').precision_get(cr, uid, 'Sale Price')
+        decimal = decimal_precision_obj.precision_get(cr, uid, 'Sale Price')
         for product in products:
             product_price = ''
             try:
@@ -414,7 +417,7 @@ class product_product(osv.osv):
 
                 if shop.zoook_tax_include:
                     product_template = product_template_obj.browse(cr, uid, product['product_id'], context=context)
-                    price_compute_all = self.pool.get('account.tax').compute_all(cr, uid, product_template.taxes_id, products[0]['price'], product['quantity'], address_id=None, product=product_template, partner=None)
+                    price_compute_all = account_tax_obj.compute_all(cr, uid, product_template.taxes_id, products[0]['price'], product['quantity'], address_id=None, product=product_template, partner=None)
 
                     product_price = price_compute_all['total_included']
                 else:
@@ -422,7 +425,7 @@ class product_product(osv.osv):
             finally:
                 if product_price:
                     product_price = '%.*f' % (decimal, product_price) #decimal precision
-                    result[str(product['product_id'])] = {"regularPrice": str(product_price)+' '+pricelist.currency_id.symbol} #{"1":{"regularPrice":"50 €"}
+                    result[str(product['product_id'])] = {"regularPrice": str(product_price)} #{"1":{"regularPrice":"50"}
 
         return result
 
