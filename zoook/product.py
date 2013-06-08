@@ -383,7 +383,7 @@ class product_product(osv.osv):
         sale_shop_obj = self.pool.get('sale.shop')
         product_pricelist_obj = self.pool.get('product.pricelist')
         account_tax_obj = self.pool.get('account.tax')
-        decimal_precision_obj = self.pool.get('decimal.precision')
+        #decimal_precision_obj = self.pool.get('decimal.precision')
         res_partner_obj = self.pool.get('res.partner')
 
         shop = sale_shop_obj.browse(cr, uid, shop_id)
@@ -399,33 +399,26 @@ class product_product(osv.osv):
 
         result = {}
 
-        decimal = decimal_precision_obj.precision_get(cr, uid, 'Sale Price')
-        for product in products:
-            product_price = ''
-            try:
-                #~ Product Taxes is computed by product.product, not product.template.
-                #~ Searh all product.product and get price less
-                products = []
-                prods = product_obj.search(cr, uid, [('product_tmpl_id','=',product['product_id'])], context=context)
-                for prod in product_obj.browse(cr, uid, prods, context=context):
-                    price = product_pricelist_obj.price_get(cr, uid, [pricelist_id], prod.id, 1.0)[pricelist_id]
-                    if shop.special_price: #if this sale shop available Special Price
-                        if prod.special_price != 0.0 and prod.special_price < price:
-                            price = prod.special_price
-                    products.append({'product_id': prod.id, 'price': price})
-                products = sorted(products, key=lambda k: k['price'])
-
-                if shop.zoook_tax_include:
-                    product_template = product_template_obj.browse(cr, uid, product['product_id'], context=context)
-                    price_compute_all = account_tax_obj.compute_all(cr, uid, product_template.taxes_id, products[0]['price'], product['quantity'], address_id=None, product=product_template, partner=None)
-
-                    product_price = price_compute_all['total_included']
-                else:
-                    product_price = products[0]['price']
-            finally:
-                if product_price:
-                    product_price = '%.*f' % (decimal, product_price) #decimal precision
-                    result[str(product['product_id'])] = {"regularPrice": str(product_price)} #{"1":{"regularPrice":"50"}
+        #~ Product Taxes is computed by product.product, not product.template.
+        #~ Searh all product.product and get price less
+        #decimal = decimal_precision_obj.precision_get(cr, uid, 'Sale Price')
+        for i in range(len(products)):
+            prod = product_obj.browse(cr, uid, products[i]['product_id'], context=context)
+            price = product_pricelist_obj.price_get(cr, uid, [pricelist_id], prod.id, 1.0)[pricelist_id]
+            if shop.special_price: #if this sale shop available Special Price
+                if prod.special_price != 0.0 and prod.special_price < price:
+                    price = prod.special_price
+            products[i]['price'] = price
+            if shop.zoook_tax_include:
+                product_template = product_template_obj.browse(cr, uid, prod.product_tmpl_id.id, context=context)
+                price_compute_all = account_tax_obj.compute_all(cr, uid, product_template.taxes_id, price, products[i]['quantity'], address_id=None, product=product_template, partner=None)
+    
+                product_price = price_compute_all['total_included']
+            else:
+                product_price = products[i]['price']
+            if product_price:
+                #product_price = '%.*f' % (decimal, product_price) #decimal precision
+                result[str(prod.id)] = {"regularPrice": product_price} #{"1":{"regularPrice":"50"}
 
         return result
 
