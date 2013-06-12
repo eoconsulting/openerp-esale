@@ -57,6 +57,7 @@ AGPL-3 http://www.gnu.org/licenses/agpl.html
 - sale_promotions
 - web_wysiwyg
 - web_display_html
+- partner_title_pricelist
 
 Check our versions of these modules in https://github.com/eoconsulting
 

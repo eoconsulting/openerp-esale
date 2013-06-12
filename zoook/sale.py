@@ -69,6 +69,8 @@ class sale_shop(osv.osv):
             ('60','60 Days'),
             ('90','90 Days'),
         ], 'Clean Logs', help='Days from delete logs to past'),
+        'zoook_partner_title_ids': fields.many2many('res.partner.title','sale_shop_partner_title_rel', 'sale_shop_id', 'partner_title_id', \
+                                        'Partner Titles', domain=[('domain','=','partner')]),
     }
 
     _defaults = {
@@ -153,15 +155,21 @@ class sale_shop(osv.osv):
         """
         Return list countries IDs
         """
-
+        countries = []
         for shop in self.browse(cr, uid, ids):
-            countries = []
-
-            for sale in self.browse(cr, uid, ids):
-                for country in sale.vat_country_ids:
-                    countries.append(country.id)
-
+            for country in shop.vat_country_ids:
+                countries.append(country.id)
         return countries
+
+    def dj_export_partner_titles(self, cr, uid, ids, context=None):
+        """
+        Return list partner titles IDs
+        """
+        titles = []
+        for shop in self.browse(cr, uid, ids):
+            for title in shop.zoook_partner_title_ids:
+                titles.append(title.id)
+        return titles
 
     def dj_export_states(self, cr, uid, country_id, context=None):
         """

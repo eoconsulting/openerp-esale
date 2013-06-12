@@ -583,5 +583,45 @@ value = price</field>
             <field name='active'>1</field>
         </record>
 
+<!--Partner Titles-->
+        <record model='base.external.mapping' id='dj_title'>
+            <field name='name'>zoook.res.partner.title</field>
+            <field name='model_id' search="[('model','=','res.partner.title')]" model='ir.model'/>
+            <field name='state'>done</field>
+        </record>
+
+        <record model='base.external.mapping.line' id='dj_title_01'>
+            <field name='mapping_id' ref='zoook.dj_title'/>
+            <field name='field_id' search="[('model_id','=','res.partner.title'),('name','=','name')]" model='ir.model.fields'/>
+            <field name='external_field'>name</field>
+            <field name='type'>out</field>
+            <field name='external_type'>str</field>
+            <field name='translate'>1</field>
+            <field name='active'>1</field>
+        </record>
+
+        <record model='base.external.mapping.line' id='dj_title_02'>
+            <field name='mapping_id' ref='zoook.dj_title'/>
+            <field name='field_id' search="[('model_id','=','res.partner.title'),('name','=','shortcut')]" model='ir.model.fields'/>
+            <field name='external_field'>shortcut</field>
+            <field name='type'>out</field>
+            <field name='external_type'>str</field>
+            <field name='translate'>1</field>
+            <field name='active'>1</field>
+        </record>
+
+        <record model='base.external.mapping.line' id='dj_title_03'>
+            <field name='mapping_id' ref='zoook.dj_title'/>
+            <field name='field_id' search="[('model_id','=','res.partner.title'),('name','=','default_pricelist_id')]" model='ir.model.fields'/>
+            <field name='external_field'>update_price</field>
+            <field name='type'>out</field>
+            <field name='external_type'>bool</field>
+            <field name='active'>1</field>
+            <field name='out_function'>title = self.pool.get('res.partner.title').browse(cr, uid, ids[0])
+if title.default_pricelist_id:
+	value = True
+else:
+	value = False</field>
+        </record>
     </data>
 </openerp>

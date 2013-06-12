@@ -64,6 +64,11 @@
                                     <field name="zoook_payment_types" colspan="4" nolabel="1"/>
                                 </group>
                             </page>
+                            <page string="Partner Titles">
+                                <group col="4" colspan="4">
+                                    <field name="zoook_partner_title_ids" colspan="4" nolabel="1"/>
+                                </group>
+                            </page>
                             <page string="Country">
                                 <group col="4" colspan="4">
                                     <field name="vat_country_ids" colspan="4" nolabel="1"/>

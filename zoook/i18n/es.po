@@ -1009,6 +1009,12 @@ msgid "Delivery"
 msgstr "Envío"
 
 #. module: zoook
+#: view:sale.shop:0
+#: field:sale.shop,zoook_partner_title_ids:0
+msgid "Partner Titles"
+msgstr "Títulos del partner"
+
+#. module: zoook
 #: help:zoook.sale.shop.payment.type,commission_price:0
 msgid "Fix price or percentatge. Percentat is over 100. 10% is 0.10"
 msgstr "Fijo o porcentaje. Porcentage es sobre 100. 10% es 0.10"
