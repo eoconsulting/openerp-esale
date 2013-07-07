@@ -67,14 +67,24 @@ class create_user_wizard(osv.osv_memory):
         'first_name': fields.char('First Name', size=255, readonly=True),
         'last_name': fields.char('Last Name', size=255, readonly=True),
         'result': fields.text('Result', readonly=True),
+        'send_now': fields.boolean('Send Email Now?'),
         'state':fields.selection([
             ('first','First'),
             ('done','Done'),
         ],'State'),
     }
 
+    def _get_wiz_model(self, cr, uid, context):
+        ir_model_id = self.pool.get('ir.model').search(cr, uid, [('model','=',self._name)], context=context)
+        template_ids = self.pool.get('poweremail.templates').search(cr, uid, [('object_name','=',ir_model_id)])
+        if len(template_ids) > 0:
+            return template_ids[0]
+        return False
+
     _defaults = {
         'state': lambda *a: 'first',
+        'send_now': lambda *a: True,
+        'email_create_user': _get_wiz_model
     }
 
     def set_first_last_name(self, name, scape=False):
@@ -109,10 +119,12 @@ class create_user_wizard(osv.osv_memory):
 
         if partner.dj_username or partner.dj_email:
             result = _('This Django user exist.')
+            result_ok = False
 
         useremail = self.pool.get('res.partner').search(cr, uid, [('dj_email','=',partner_address.email)])
         if len(useremail) or not partner_address.email:
             result = _('This email is null or exist another user. Use another email/address')
+            result_ok = False
 
         if not result:
             #First Name / Last Name
@@ -150,12 +162,14 @@ class create_user_wizard(osv.osv_memory):
                 }
                 context['command'] = 'sync/user.py -u %s -p %s -o %s -e %s -f "%s" -l "%s"' % (username, password, partner.id, email, first_name, last_name)
                 respy = self.pool.get('django.connect').ssh_command(cr, uid, sale.id, values, context)
+                if not respy or respy == 'True':
+                    respy = ''
                 res.append(_('Sale Shop: %s Username: %s. %s') % (sale.name, username, respy))
 
             if len(res)>0:
                 for r in res:
                     result += r
-            
+
             res_values['username'] = username
             res_values['password'] = password
             res_values['first_name'] = first_name
@@ -164,13 +178,17 @@ class create_user_wizard(osv.osv_memory):
 
             #write partner dj info
             self.pool.get('res.partner').write(cr, uid, [partner.id], {'dj_username': username, 'dj_email': email})
+            result_ok = True
 
         res_values['state'] = 'done'
         res_values['result'] = result
         #write result values
         self.write(cr, uid, ids, res_values)
-        
-        self.pool.get('poweremail.templates').generate_mail(cr, uid, form.email_create_user.id, [form.id])
+
+        if result_ok:
+            mail_ids = self.pool.get('poweremail.templates').generate_mail(cr, uid, form.email_create_user.id, [form.id])
+            if mail_ids and len(mail_ids)>0 and form.send_now:
+                return self.pool.get('poweremail.mailbox').send_all_mail(cr, uid, mail_ids, context)
 
         return True
 

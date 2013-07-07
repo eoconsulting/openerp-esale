@@ -37,15 +37,25 @@ class reset_user_wizard(osv.osv_memory):
         'username': fields.char('Username', size=64, readonly=True),
         'password': fields.char('Password', size=64, readonly=True),
         'result': fields.text('Result', readonly=True),
+        'send_now': fields.boolean('Send Email Now?'),
         'state':fields.selection([
             ('first','First'),
             ('done','Done'),
         ],'State'),
     }
 
+    def _get_wiz_model(self, cr, uid, context):
+        ir_model_id = self.pool.get('ir.model').search(cr, uid, [('model','=',self._name)], context=context)
+        template_ids = self.pool.get('poweremail.templates').search(cr, uid, [('object_name','=',ir_model_id)])
+        if len(template_ids) > 0:
+            return template_ids[0]
+        return False
+
     _defaults = {
         'partner_id': lambda s,cr,uid,context: context['partner_id'],
         'state': lambda *a: 'first',
+        'send_now': lambda *a: True,
+        'email_reset_user': _get_wiz_model
     }
 
     def reset_user(self, cr, uid, ids, context=None):
@@ -79,12 +89,14 @@ class reset_user_wizard(osv.osv_memory):
                 }
                 context['command'] = 'sync/user_reset.py -u %s -p %s' % (partner.dj_username, password)
                 respy = self.pool.get('django.connect').ssh_command(cr, uid, sale.id, values, context)
-                res.append(_('Sale Shop: %s Username: %s. %s') % (sale.name, partner.dj_username, respy))
+                if not respy or respy == 'True':
+                    respy = ''
+                res.append(_('Sale Shop: %s. Username: %s. %s') % (sale.name, partner.dj_username, respy))
 
             if len(res)>0:
                 for r in res:
                     result += r
-            
+
             res_values['username'] = partner.dj_username
             res_values['password'] = password
 
@@ -92,8 +104,10 @@ class reset_user_wizard(osv.osv_memory):
         res_values['result'] = result
         #write result values
         self.write(cr, uid, ids, res_values)
-        
-        self.pool.get('poweremail.templates').generate_mail(cr, uid, form.email_reset_user.id, [form.id])
+
+        mail_ids = self.pool.get('poweremail.templates').generate_mail(cr, uid, form.email_reset_user.id, [form.id])
+        if mail_ids and len(mail_ids)>0 and form.send_now:
+            return self.pool.get('poweremail.mailbox').send_all_mail(cr, uid, mail_ids, context)
 
         return True
 

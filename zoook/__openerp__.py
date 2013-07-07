@@ -24,7 +24,7 @@
 
 {
     "name" : "ZoooK - OpenERP e-sale",
-    "version" : "1.1",
+    "version" : "1.1.1",
     "author" : "Zikzakmedia SL / Enterprise Objects Consulting",
     "website" : "http://www.eoconsulting.com.ar",
     "category" : "Generic Modules",

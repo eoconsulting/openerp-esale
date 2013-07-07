@@ -11,11 +11,11 @@
                     <label string="Are you sure to create a new user?" colspan="4"/>
                     <field name="partner_address_id"/><newline/>
                     <field name="email_create_user" groups="base.group_extended"/>
+                    <field name="send_now" />
                 </group>
                 <group col="4" colspan="4" attrs="{'invisible':[('state','=','first')]}">
                     <field name="result"/><newline/>
                     <field name="username"/><newline/>
-                    <field name="password"/><newline/>
                     <field name="email"/><newline/>
                     <field name="last_name"/><newline/>
                     <field name="first_name"/><newline/>
