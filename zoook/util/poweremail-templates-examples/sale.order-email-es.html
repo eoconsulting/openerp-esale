@@ -1,0 +1,50 @@
+<style type="text/css">
+    div#sale { font-family: Helvetica, sans-serif; font-size: 1em; }
+    #sale table  { width: 75%; margin: 30px 10%; border-spacing: 0px; border: 2px solid #f00; }
+    #sale th, td { border-right: 1px solid #f00; border-top: 1px solid #f00; padding: 5px; }
+    #sale th     { background-color: #f00; color: #fff; text-align: left; font-weight: bold; padding: 8px; }
+    #sale .number  { text-align: right; }
+    #sale .descrip { width: 60%; }
+    #sale h3 { font-weight: bolder; font-size: 1.1em; }
+    #sale .references { padding-left: 10px; margin: 10px 0px; }
+</style>
+<div id="sale">
+<p>
+Estimado ${object.partner_order_id.name or 'Cliente'} <strong>${object.partner_id.name or ' '}</strong>,
+<br />
+Le damos las gracias por su compra. El producto(s) que acaba de adquirir es:</p>
+<table>
+<thead>
+    <tr>
+        <th class="descrip">Descripción</th>
+        <th class="number">Cant.</th>
+        <th class="number">Pricio Unit.</th>
+        <th class="number">Descuento %</th>
+        <th class="number">Subtotal</th>
+    </tr>
+</thead>
+<tbody>
+%for o in object.order_line:
+    <tr>
+        <td>${o.name}</td>
+        <td class="number">${o.product_uom_qty}</td>
+        <td class="number">${o.price_unit}</td>
+        <td class="number">${o.discount}</td>
+        <td class="number">${o.product_uom_qty * o.price_unit}</td>
+    </tr>
+%endfor
+</tbody>
+</table>
+<h3>REFERENCIAS</h3>
+<div class="references"><p>
+    Núm. orden: <strong>${object.name}</strong><br/>
+    Total orden: <strong>${object.amount_total}</strong><br/>
+    Fecha: ${object.date_order}<br/>
+</p></div>
+<p><em>Gracias y un saludo cordial,</em></p>
+<address>
+    <strong>${object.user_id.name or 'Equipo de Ventas'}</strong><br />
+    <strong>${object.shop_id.name or object.company_id.name}</strong>
+</address>
+</div>
+
