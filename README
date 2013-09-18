@@ -50,7 +50,7 @@ AGPL-3 http://www.gnu.org/licenses/agpl.html
 - poweremail
 - product_m2mcategories
 - product_images_olbs
-- product_attributes
+- product_attributes (deprecated, not fully implemented)
 - product_variant_name
 - sale_multi_shop
 - sale_payment
