@@ -1,5 +1,9 @@
 ==OpenERP e-sale. Zoook==
 
+----------------------------------------------------------------
+This project has been moved to https://launchpad.net/zoook-esale
+----------------------------------------------------------------
+
 Zoook e-commerce tool is a module for OpenERP and Django, e-commerce 100% python.
 Integrated features OpenERP into esale shop (product, sale, stock, price list, ...).  Not need mapping line or syncronization... configure your esale portal and go to drink some coffe or beer.
 
